@@ -54,18 +54,23 @@ int main(int argc, char *argv[]) {
     int previous_packet_number = -1;
     while (1) {
         recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
-        printf("Received packet %s %d\n", buffer, BUFFER_SIZE);
-        if (packet_number % 2 == 0) {
-            gettimeofday(&t1, NULL);  // Time for the first packet
+        int packet_number = 0;
+        for (int i = 0 ; i < 4 ; i ++) {
+            packet_number = packet_number * 10 + buffer[i] - '0';
+        }
+        if (packet_number % 2 == 1) {
+            previous_packet_number = packet_number;
+            gettimeofday(&t1, NULL); 
         } 
-        else {
-            gettimeofday(&t2, NULL);  // Time for the second packet
+        else if (previous_packet_number == packet_number - 1) {
+            gettimeofday(&t2, NULL);
             double delta_t = time_diff(t1, t2);  // Time difference in microseconds
             double C = (BUFFER_SIZE * 8) / delta_t;  // Assuming BUFFER_SIZE in bytes
-            printf("bandwidth: %lf\n", C);
-            // fprintf(fp, "%lf\n", C);  // Log result
+            printf("bandwidth: %lf %d %d\n", C, previous_packet_number, packet_number);
         }
-        packet_number++;
+        else {
+            printf("Packet loss\n");
+        }
     }
 
     fclose(fp);
