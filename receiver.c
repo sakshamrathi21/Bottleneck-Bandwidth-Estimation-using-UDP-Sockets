@@ -55,9 +55,10 @@ int main(int argc, char *argv[]) {
     while (1) {
         recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
         int packet_number = 0;
-        for (int i = 0 ; i < 4 ; i ++) {
+        for (int i = 3 ; i >= 0 ; i --) {
             packet_number = packet_number * 10 + buffer[i] - '0';
         }
+        printf("Received packet %d\n", packet_number);
         if (packet_number % 2 == 1) {
             previous_packet_number = packet_number;
             gettimeofday(&t1, NULL); 
