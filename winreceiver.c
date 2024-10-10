@@ -67,23 +67,7 @@ int main(int argc, char *argv[]) {
     while (1) {
         // Receive packet
         int recv_len = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &client_addr_len);
-        if (recv_len == SOCKET_ERROR) {
-            printf("recvfrom failed. Error Code: %d\n", WSAGetLastError());
-            break;
-        }
-
-        // For the first packet in the pair, store the receive time
-        if (packet_number % 2 == 0) {
-            QueryPerformanceCounter(&t1);  // Record time for the first packet
-        } 
-        // For the second packet in the pair, compute the time difference
-        else {
-            QueryPerformanceCounter(&t2);  // Record time for the second packet
-            double delta_t = time_diff(t1, t2, frequency);  // Time difference in microseconds
-            double C = (BUFFER_SIZE * 8) / delta_t;  // Assuming BUFFER_SIZE in bytes
-            fprintf(fp, "%lf\n", C);  // Log result
-        }
-
+        printf("Received packet %d\n", buffer);
         packet_number++;
     }
 
