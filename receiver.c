@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     int previous_packet_number = -1;
     while (1) {
         recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
-        printf("Received packet %d %d\n", buffer, BUFFER_SIZE);
+        printf("Received packet %s %d\n", buffer, BUFFER_SIZE);
         if (packet_number % 2 == 0) {
             gettimeofday(&t1, NULL);  // Time for the first packet
         } 
