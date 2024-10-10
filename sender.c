@@ -16,18 +16,20 @@ void send_packet_pairs(int sockfd, struct sockaddr_in dest_addr, int P, int spac
             packet1[j] = 'a';
         }
         int packet_num1 = 2*i-1;
-        // for (int j = 0; j < sizeof(int); ++j) {
-        //     packet1[j] = (packet_num1 >> (8 * j)) & 0xFF;  // Extract 8 bits at a time
-        // }
+        for (int j = 0 ; j < 4 ; j ++) {
+            packet1[j] = '0' + packet_num1%10;
+            packet_num1 = packet_num1/10;
+        }
         sendto(sockfd, packet1, sizeof(packet1), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
         printf("Packet %d\n", 2*i-1);
         for (int j = 0 ; j < P ; j ++) {
             packet1[j] = 'b';
         }
         int packet_num2 = 2*i;
-        // for (int j = 0; j < sizeof(int); ++j) {
-        //     packet1[j] = (packet_num2 >> (8 * j)) & 0xFF;  // Extract 8 bits at a time
-        // }
+        for (int j = 0 ; j < 4 ; j ++) {
+            packet1[j] = '0' + packet_num2%10;
+            packet_num2 = packet_num2/10;
+        }
         sendto(sockfd, packet1, sizeof(packet1), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
         printf("Packet %d\n", 2*i);
         usleep(spacing_ms * 1000);
