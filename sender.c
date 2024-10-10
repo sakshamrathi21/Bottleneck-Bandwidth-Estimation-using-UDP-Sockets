@@ -10,7 +10,7 @@ void send_packet_pairs(int sockfd, struct sockaddr_in dest_addr, int P, int spac
     
     for (int i = 1; i <= total_pairs; ++i) {
         // Packet 1
-        printf("Packet %d\n", i);
+        // printf("Packet %d\n", i);
         char packet1[P];
         int packet_num1 = 2*i-1;
         for (int j = 0; j < sizeof(int); ++j) {
