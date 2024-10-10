@@ -17,6 +17,29 @@
 \usepackage{mathpazo}   % Palatino font (serif)
 \usepackage{microtype}  % Better typography
 
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configuration for the C language
+\lstset{
+    language=C,                     % Set language to C
+    frame=single,                   % Draw a box around the code
+    basicstyle=\ttfamily,           % Set the basic font to typewriter
+    keywordstyle=\bfseries\color{blue}, % Color for keywords
+    commentstyle=\itshape\color{green!60!black},  % Color for comments
+    stringstyle=\color{red},        % Color for strings
+    numbers=left,                   % Line numbers on the left
+    numberstyle=\tiny\color{gray},  % Style of line numbers
+    stepnumber=1,                   % Line number increment
+    tabsize=4,                      % Set tab width
+    showspaces=false,               % Don't show spaces
+    showstringspaces=false,         % Don't show string spaces
+    breaklines=true,                % Automatic line breaking
+    captionpos=b,                   % Caption at the bottom
+    escapeinside={\%*}{*)},         % For escaping to LaTeX inside the code
+    morekeywords={uint32_t, uint8_t} % Add more keywords if needed
+}
+
 % Page background color
 \pagecolor{gray!10!white}
 
@@ -70,7 +93,7 @@
 
 \begin{document}
 \maketitle
-\begin{solution}{Part1: Theory}
+\begin{solution}{Part 1: (Theory) }
     Let us prove this by induction.
     \subsection*{Case1 : number of links(k) = 1}
     Packet 1 is ahead and reaches $t_1=P/C_1$ where $C_1$ is the link's bandwidth. Packet 2 waits until Packet 1 is completely sent and then is sent. It takes time $P/C_1+P/C_1$, which is $t_2=2*P/C_1$. 
@@ -86,6 +109,75 @@
     and as $D<C$, $t_1'$ will be more than $t_2$ therefore Packet2 has to wait until Packet 1 is completely sent across  ${k+1}^{th}$ link. This waiting time is $t_1'-t_2$, and then it is sent. The new $t_2'$ is $t_2+$waiting time $+P/D$ which is $t_2+t_1'-t_2+P/D$. In this case, $P/(t_2'-t_1')$ is D, which matches the bottleneck bandwidth.
 
     By induction, we proved that bottleneck bandwidth can be calculated as $P/(t_2-t_1)$
+\end{solution}
+
+\clearpage
+
+\begin{solution}{Part 2: (Implementation)}
+(a) Here is the code for creating datagram sockets at the sender side:
+\begin{lstlisting}[caption=Sender Datagram Socket Creation]
+    int sockfd;
+    struct sockaddr_in dest_addr;
+    sockfd = socket(AF_INET, SOCK_DGRAM, 0);  // UDP socket
+    if (sockfd == -1) {
+        // Socket creation failed
+        perror("Socket creation failed");
+        return -1;
+    }
+    // Set up the destination address structure
+    dest_addr.sin_family = AF_INET;
+    dest_addr.sin_port = htons(8080);  // Set an appropriate port
+    dest_addr.sin_addr.s_addr = inet_addr(dest_ip);
+\end{lstlisting}
+The first line declares an integer variable sockfd which will store the file descriptor for the socket once it is created. The second line declares a variable $dest\_addr$ of type struct $sockaddr\_in$. This structure is used to specify the destination address for the socket communication, including details like the IP address and port number. The third line creates a new socket by calling the socket() function. This function takes three arguments. 
+\begin{itemize}
+    \item The first argument specifies the address family, which is AF\_INET in this case. This indicates that we are using the IPv4 protocol.
+    \item The second argument specifies the type of socket, which is SOCK\_DGRAM. This indicates that we are creating a datagram socket, which is used for connectionless communication.
+    \item The third argument is the protocol, which is 0 in this case. This allows the system to choose the appropriate protocol based on the type of socket and the address family.
+\end{itemize}
+If the socket creation fails, the function prints an error message using perror() and returns -1. The tenth line sets the address family of the destination to AF\_INET, which means it is using the IPv4 protocol. The second last line sets the destination port number for the socket. The htons() function is used to convert the port number (8080 in this case) from host byte order (which varies by machine architecture) to network byte order (which is big-endian). The last line sets the IP address of the destination in the $sin\_addr.s\_addr$ field. The $inet\_addr()$ function converts a human-readable IPv4 address (passed as $dest\_ip$) into a format suitable for storing in the $sin\_addr.s\_addr$ field. 
+
+
+Here is the code for creating datagram sockets at the receiver side:
+\begin{lstlisting}[caption=Sender Datagram Socket Creation]
+    int sockfd;
+    struct sockaddr_in server_addr, client_addr;
+    char buffer[BUFFER_SIZE];
+    socklen_t addr_len = sizeof(client_addr);
+    sockfd = socket(AF_INET, SOCK_DGRAM, 0);  // UDP socket
+    if (sockfd == -1) {
+        // If the socket creation fails, print an error message and return -1
+        perror("Socket creation failed");
+        fclose(fp);
+        return -1;
+    }
+    // Set up the server address structure
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(8080); // Listening on port number 8080
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    if (bind(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1) {
+        // If the bind fails, print an error message, close the socket, close the file, and return -1
+        perror("Bind failed");
+        close(sockfd);
+        fclose(fp);
+        return -1;
+    }
+\end{lstlisting}
+
+The third line is the buffer, where we will receive inputs fron the sender. The fourth line is the length of the client address structure. The fifth line is similar to the sender side's code. The tenth line sets the IP address of the server to INADDR\_ANY, which means the server will listen on all available network interfaces. The eleventh line binds the socket to the server address. The bind() function associates the socket with the server address so that it can receive packets sent to that address. If the bind fails, the function prints an error message using perror(), closes the socket using close(), closes the file using fclose(), and returns -1. The bind() function takes three arguments.
+\begin{itemize}
+    \item The first argument is the socket file descriptor.
+    \item The second argument is a pointer to the server address structure cast to a struct sockaddr pointer.
+    \item The third argument is the size of the server address structure.
+\end{itemize}
+
+
+(b) Here is the code for sending data to the socket:
+
+\begin{lstlisting}[caption=Sending Data to the Socket]
+    sendto(sockfd, buffer, strlen(buffer), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
+\end{lstlisting}
+
 \end{solution}
 
 
