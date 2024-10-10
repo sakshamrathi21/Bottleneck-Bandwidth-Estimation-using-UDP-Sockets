@@ -7,18 +7,17 @@
 #include <time.h>
 
 void send_packet_pairs(int sockfd, struct sockaddr_in dest_addr, int P, int spacing_ms, int total_pairs) {
-    for (int i = 0; i < total_pairs; ++i) {
+    
+    for (int i = 0; i <= total_pairs; ++i) {
         // Packet 1
+        printf("Packet %d\n", i);
         char packet1[P];
-        sprintf(packet1, "Packet %d", 2 * i + 1);
+        int packet_num1 = i;
+        for (int j = 0; j < sizeof(int); ++j) {
+            packet1[j] = (packet_num1 >> (8 * j)) & 0xFF;  // Extract 8 bits at a time
+        }
         sendto(sockfd, packet1, sizeof(packet1), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
         
-        // Packet 2
-        char packet2[P];
-        sprintf(packet2, "Packet %d", 2 * i + 2);
-        sendto(sockfd, packet2, sizeof(packet2), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
-
-        // Wait for the specified interval
         usleep(spacing_ms * 1000);
     }
 }
@@ -33,7 +32,7 @@ int main(int argc, char *argv[]) {
     char *dest_ip = argv[2];
     int spacing_ms = atoi(argv[3]);
     int total_pairs = atoi(argv[4]);
-
+    // printf("total_pairs: %d\n", total_pairs);
     int sockfd;
     struct sockaddr_in dest_addr;
 
@@ -46,7 +45,7 @@ int main(int argc, char *argv[]) {
     dest_addr.sin_family = AF_INET;
     dest_addr.sin_port = htons(8080);  // Set an appropriate port
     dest_addr.sin_addr.s_addr = inet_addr(dest_ip);
-
+    printf("hello\n");
     send_packet_pairs(sockfd, dest_addr, P / 8, spacing_ms, total_pairs);  // Convert P from bits to bytes
 
     close(sockfd);
