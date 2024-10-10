@@ -175,8 +175,67 @@ The third line is the buffer, where we will receive inputs fron the sender. The 
 (b) Here is the code for sending data to the socket:
 
 \begin{lstlisting}[caption=Sending Data to the Socket]
-    sendto(sockfd, buffer, strlen(buffer), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
+    sendto(sockfd, packet1, sizeof(packet1), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
 \end{lstlisting}
+
+The sendto() function is used to send data to a socket. It takes six arguments. 
+\begin{itemize}
+    \item The first argument is the socket file descriptor.
+    \item The second argument is a pointer to the data to be sent.
+    \item The third argument is the size of the data to be sent.
+    \item The fourth argument is a set of flags, which is 0 in this case.
+    \item The fifth argument is a pointer to the destination address structure cast to a struct sockaddr pointer.
+    \item The sixth argument is the size of the destination address structure.
+\end{itemize}
+
+We are sending an initial packet which contains the size of the packets (P) which is used in bandwidth calculation. And an ending packet helps in the termination of the receiver side code.
+
+
+(c) Here is the code for receiving data from the socket:
+\begin{lstlisting}[caption=Receiving Data from the Socket]
+    recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
+\end{lstlisting}
+
+The recvfrom() function is used to receive data from a socket. It takes six arguments.
+\begin{itemize}
+    \item The first argument is the socket file descriptor.
+    \item The second argument is a pointer to a buffer where the received data will be stored.
+    \item The third argument is the size of the buffer.
+    \item The fourth argument is a set of flags, which is 0 in this case.
+    \item The fifth argument is a pointer to the client address structure cast to a struct sockaddr pointer.
+    \item The sixth argument is a pointer to the length of the client address structure.
+\end{itemize}
+
+
+(d) Measuring the time interval of packets:
+\begin{lstlisting}[caption=Measuring the time interval of packets]
+    gettimeofday(&t2, NULL); // Get time in microseconds
+    double delta_t = time_diff(t1, t2);  // Time difference in microseconds
+    double C = (packet_size*8) / delta_t;  // packet_size in bytes, so converting to bits
+\end{lstlisting}
+
+The function gettimeofday() is used to get the current time in microseconds. It takes two arguments.
+\begin{itemize}
+    \item The first argument is a pointer to a timeval structure where the time will be stored.
+    \item The second argument is NULL, which means the time will be based on the system clock.
+\end{itemize}
+The function time\_diff() calculates the difference between two timeval structures in microseconds. The variable $delta\_t$ stores the time difference between the two packets in microseconds. The variable $C$ calculates the bandwidth in bits per second by dividing the packet size (in bytes) by the time difference (in seconds).
+
+
+(e) Sending two packets one after the other:
+\begin{lstlisting}[caption=Sending two packets one after the other]
+    char packet1[P], packet2[P];
+    // Sending the first packet
+    sendto(sockfd, packet1, sizeof(packet1), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
+    // Sending the second packet
+    sendto(sockfd, packet2, sizeof(packet2), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
+    // Sleep for the given spacing time
+    usleep(spacing_ms * 1000);
+\end{lstlisting}
+
+In sender.c, we are sending the packets one after the other (there is no delay in between). So, as soon as the first packet is sent, the code prepares the second packet and sends it immediately. After this pair is sent, a usleep statement is added before the next pair is sent. 
+
+
 
 \end{solution}
 

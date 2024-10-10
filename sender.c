@@ -44,9 +44,6 @@ void send_packet_pairs(int sockfd, struct sockaddr_in dest_addr, int P, int spac
             packet_num1 = packet_num1/10;
             start_index ++;
         }
-        // Sending the first packet
-        sendto(sockfd, packet1, sizeof(packet1), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
-        printf("Packet %d\n", 2*i-1);
 
         // The second packet conatins all characters as 'b' except the first few characters which contain the packet number
         for (int j = 0 ; j < P ; j ++) {
@@ -59,8 +56,11 @@ void send_packet_pairs(int sockfd, struct sockaddr_in dest_addr, int P, int spac
             packet_num2 = packet_num2/10;
             start_index ++;
         }
+        // Sending the first packet
+        sendto(sockfd, packet1, sizeof(packet1), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
         // Sending the second packet
         sendto(sockfd, packet2, sizeof(packet2), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
+        printf("Packet %d\n", 2*i-1);
         printf("Packet %d\n", 2*i);
 
         // Sleep for the given spacing time
