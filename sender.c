@@ -52,7 +52,8 @@ void send_packet_pairs(int sockfd, struct sockaddr_in dest_addr, int P, int spac
         for (int j = 0 ; j < P ; j ++) {
             packet2[j] = 'b';
         }
-        int packet_num2 = 2*i, start_index = 0;
+        int packet_num2 = 2*i;
+        start_index = 0;
         while (packet_num2 > 0) {
             packet2[start_index] = '0' + packet_num2%10;
             packet_num2 = packet_num2/10;
