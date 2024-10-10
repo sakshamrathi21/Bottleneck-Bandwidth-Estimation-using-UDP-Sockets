@@ -52,10 +52,26 @@ int main(int argc, char *argv[]) {
     struct timeval t1, t2;
     int packet_number = 0;
     int previous_packet_number = -1;
+    ssize_t recv_len = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
+    int packet_size = 0;
+    for (int i = recv_len - 1 ; i >= 0 ; i --) {
+        if (buffer[i] == 'a') {
+            continue;
+        }
+        // printf("buffer[i]: %c\n", buffer[i]);
+        packet_size = packet_size * 10 + buffer[i] - '0';
+    }
+    printf("Packet size: %d\n", packet_size);
     while (1) {
-        recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
+        ssize_t recv_len = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
         int packet_number = 0;
-        for (int i = 3 ; i >= 0 ; i --) {
+        if (buffer[0] == 'c') {
+            break;
+        }
+        for (int i = packet_size - 1 ; i >= 0 ; i --) {
+            if (buffer[i] == 'a' || buffer[i] == 'b') {
+                continue;
+            }
             packet_number = packet_number * 10 + buffer[i] - '0';
         }
         printf("Received packet %d\n", packet_number);
@@ -66,8 +82,8 @@ int main(int argc, char *argv[]) {
         else if (previous_packet_number == packet_number - 1) {
             gettimeofday(&t2, NULL);
             double delta_t = time_diff(t1, t2);  // Time difference in microseconds
-            double C = (BUFFER_SIZE * 8) / delta_t;  // Assuming BUFFER_SIZE in bytes
-            printf("bandwidth: %lf %d %d\n", C, previous_packet_number, packet_number);
+            double C = (packet_size*8) / delta_t;  // Assuming BUFFER_SIZE in bytes
+            fprintf(fp, "bandwidth: %lf %d %d\n", C, previous_packet_number, packet_number);
         }
         else {
             printf("Packet loss\n");

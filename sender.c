@@ -7,6 +7,19 @@
 #include <time.h>
 
 void send_packet_pairs(int sockfd, struct sockaddr_in dest_addr, int P, int spacing_ms, int total_pairs) {
+    char first_packet[P];
+    for (int j = 0 ; j < P ; j ++) {
+        first_packet[j] = 'a';
+    }
+    int packet_size = P;
+    printf("Packet size %d\n", packet_size);
+    for (int j = 0 ; j < 4 ; j ++) {
+        first_packet[j] = '0' + packet_size%10;
+        packet_size = packet_size/10;
+        printf("%d\n", packet_size);
+    }
+    printf("First packet %s\n", first_packet);
+    sendto(sockfd, first_packet, sizeof(first_packet), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
     
     for (int i = 1; i <= total_pairs; ++i) {
         // Packet 1
@@ -34,6 +47,11 @@ void send_packet_pairs(int sockfd, struct sockaddr_in dest_addr, int P, int spac
         printf("Packet %d\n", 2*i);
         usleep(spacing_ms * 1000);
     }
+    char last_packet[P];
+    for (int j = 0 ; j < P ; j ++) {
+        last_packet[j] = 'c';
+    }
+    sendto(sockfd, last_packet, sizeof(last_packet), 0, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
 }
 
 int main(int argc, char *argv[]) {
