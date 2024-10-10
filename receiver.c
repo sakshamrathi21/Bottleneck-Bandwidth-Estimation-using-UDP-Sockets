@@ -51,10 +51,20 @@ int main(int argc, char *argv[]) {
     printf("Listening on port 8080\n");
     struct timeval t1, t2;
     int packet_number = 0;
+    int previous_packet_number = -1;
     while (1) {
         recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr*)&client_addr, &addr_len);
         printf("Received packet %d\n", buffer);
         packet_number++;
+        if (packet_number % 2 == 0) {
+            gettimeofday(&t1, NULL);  // Time for the first packet
+        } 
+        else {
+            gettimeofday(&t2, NULL);  // Time for the second packet
+            double delta_t = time_diff(t1, t2);  // Time difference in microseconds
+            double C = (BUFFER_SIZE * 8) / delta_t;  // Assuming BUFFER_SIZE in bytes
+            printf(fp, "%lf\n", C);  // Log result
+        }
     }
 
     fclose(fp);
