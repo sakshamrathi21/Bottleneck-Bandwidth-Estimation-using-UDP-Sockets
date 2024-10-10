@@ -234,10 +234,43 @@ The function time\_diff() calculates the difference between two timeval structur
 \end{lstlisting}
 
 In sender.c, we are sending the packets one after the other (there is no delay in between). So, as soon as the first packet is sent, the code prepares the second packet and sends it immediately. After this pair is sent, a usleep statement is added before the next pair is sent. 
+\end{solution}
+
+\begin{solution}{Part 3: Experimentation}
+    We restricted the throughput to 10Mbps through the following command:
+\begin{lstlisting}[caption=Restricting the throughput to 10Mbps]
+sudo tc qdisc add dev lo root tbf rate 10mbit burst 9kbit latency 50ms
+\end{lstlisting}
+
+The sender was run with the following paramters:
+\begin{itemize}
+    \item Packet size (P) = 1000 bytes = 8000 bits
+    \item Destination IP Address = 127.0.0.1
+    \item Spacing time = 100ms
+    \item Total number of pairs of packets = 100
+\end{itemize}
+
+The receiver was set to produce the bandwidth values of the 100 packets in the "part3-e1-buffer" output file.
+
+
+Here is the histogram which we have obtained:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{bandwidth_histogram.png}
+    \caption{Histogram of Bandwidth values}
+\end{figure}
+
+
+The bin size was set to be 0.25 Mbps. Yes, someone looking at the histogram can easily say that the bottleneck was set to be 10 Mbps because all the values are quite close to 10 Mbps. If we would have removed this protocol constraint, then histogram would have been spread out.
+
+
+A peak of the histogram occurs around 10.75 Mbps (which is a little higher than the limit set by us). We have some values to the left and right of this peak too.
+
+
 
 
 
 \end{solution}
-
 
 \end{document}

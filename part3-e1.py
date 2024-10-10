@@ -12,7 +12,7 @@ def read_bandwidth_data(file_path):
                 bandwidths.append(float(parts[1]))  # Convert the bandwidth to float
     return bandwidths
 
-# Function to plot histogram of the bandwidths
+# Function to plot histogram of the bandwidths and print bin heights
 def plot_bandwidth_histogram(bandwidths, bin_width):
     min_bandwidth = min(bandwidths)
     max_bandwidth = max(bandwidths)
@@ -21,7 +21,16 @@ def plot_bandwidth_histogram(bandwidths, bin_width):
     bins = np.arange(min_bandwidth, max_bandwidth + bin_width, bin_width)
     
     plt.figure(figsize=(10, 6))
-    plt.hist(bandwidths, bins=bins, edgecolor='black', alpha=0.7)
+    
+    # Plot the histogram and get the values of bins
+    counts, edges, patches = plt.hist(bandwidths, bins=bins, edgecolor='black', alpha=0.7)
+    
+    # Loop through each bin and add a label with the bin height on top
+    for count, edge in zip(counts, edges):
+        # Place the label at the center of the bin
+        plt.text(edge + bin_width / 2, count, str(int(count)), 
+                 ha='center', va='bottom', fontsize=10)
+    
     plt.title('Histogram of Bandwidth Data')
     plt.xlabel('Bandwidth')
     plt.ylabel('Frequency')
