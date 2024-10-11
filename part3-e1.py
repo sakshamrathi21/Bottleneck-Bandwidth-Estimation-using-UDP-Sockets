@@ -35,11 +35,11 @@ def plot_bandwidth_histogram(bandwidths, bin_width):
     plt.xlabel('Bandwidth')
     plt.ylabel('Frequency')
     plt.grid(axis='y', alpha=0.75)
-    plt.savefig('bandwidth_histogram.png')
+    plt.savefig('part3-e2-nandan-room-buffer_bandwidth_histogram.png')
 
 # Main execution
 if __name__ == "__main__":
-    file_path = 'part3-e1-buffer'  # Replace with your actual file path
+    file_path = 'part3-e2-nandan-room-buffer'  # Replace with your actual file path
     bandwidths = read_bandwidth_data(file_path)
-    bin_width = 0.25  # Set your desired bin width here
+    bin_width = 20  # Set your desired bin width here
     plot_bandwidth_histogram(bandwidths, bin_width)
