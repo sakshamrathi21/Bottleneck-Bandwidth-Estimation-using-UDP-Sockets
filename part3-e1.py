@@ -35,11 +35,11 @@ def plot_bandwidth_histogram(bandwidths, bin_width):
     plt.xlabel('Bandwidth')
     plt.ylabel('Frequency')
     plt.grid(axis='y', alpha=0.75)
-    plt.savefig('part3-e2-my-room-sl-buffer_bandwidth_histogram.png')
+    plt.savefig('h6-h3-buffer_bandwidth_histogram.png')
 
 # Main execution
 if __name__ == "__main__":
-    file_path = 'part3-e2-my-room-sl-buffer'  # Replace with your actual file path
+    file_path = 'h6-h3-buffer'  # Replace with your actual file path
     bandwidths = read_bandwidth_data(file_path)
     bin_width = 20  # Set your desired bin width here
     plot_bandwidth_histogram(bandwidths, bin_width)
