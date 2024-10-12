@@ -257,7 +257,7 @@ Here is the histogram which we have obtained:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{bandwidth_histogram.png}
+    \includegraphics[width=0.8\textwidth]{histograms/bandwidth_histogram.png}
     \caption{Histogram of Bandwidth values}
 \end{figure}
 
@@ -273,6 +273,7 @@ A peak of the histogram occurs around 10.75 Mbps (which is a little higher than 
     This time we didn't impose any restrictions on the throughput for any interface on either machine. Here are the three paths and the corresponding histograms:
     \begin{itemize}
         \item Path 1: Hostel-6 (sender) and Hostel-3 (receiver)
+        
         Traceoutput:
         \begin{verbatim}
 traceroute 10.64.17.94
@@ -290,26 +291,34 @@ traceroute to 10.64.17.94 (10.64.17.94), 30 hops max, 60 byte packets
         Here is the histogram for this path:
         \begin{figure}[H]
             \centering
-            \includegraphics[width=0.8\textwidth]{h6-h3-buffer_bandwidth_histogram.png}
+            \includegraphics[width=0.8\textwidth]{histograms/h6-h3-buffer_bandwidth_histogram.png}
             \caption{Histogram of Bandwidth values for Path 1}
         \end{figure}
-        \item Path 2: SL-Machine (New CC) (sender) and Hostel-5 (receiver)
+
+        \item Path 2: Hostel-5 Ethernet (sender) and SL-Machine (receiver)
+        
         Traceoutput:
-        \begin{verbatim}
-traceroute to 10.64.10.66 (10.64.10.66), 30 hops max, 60 byte packets
-1  _gateway (10.130.154.250)  1.023 ms  1.028 ms  1.285 ms
-2  10.250.130.1 (10.250.130.1)  0.325 ms  0.303 ms  0.283 ms
-3  172.16.12.1 (172.16.12.1)  0.435 ms  0.415 ms  0.395 ms
-4  10.64.10.66 (10.64.10.66)  18.087 ms  18.065 ms  18.181 ms      
-\end{verbatim}   
-Number of hops = 4
+\begin{verbatim}
+    1  192.168.0.1 (192.168.0.1)  2.202 ms  1.924 ms  1.887 ms
+    2  10.5.10.250 (10.5.10.250)  2.133 ms  2.211 ms  2.287 ms
+    3  10.250.5.1 (10.250.5.1)  2.810 ms  3.001 ms  5.935 ms
+    4  10.250.18.1 (10.250.18.1)  8.537 ms  2.646 ms  3.284 ms
+    5  172.16.2.1 (172.16.2.1)  2.286 ms  2.286 ms  2.043 ms
+    6  10.250.130.2 (10.250.130.2)  2.627 ms  3.639 ms  3.504 ms
+    7  10.130.155.33 (10.130.155.33)  3.026 ms  3.279 ms  2.985 ms
+\end{verbatim}
+
+Number of hops = 7
 
 Here is the histogram for this path:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{part3-e2-my-room-sl-buffer_bandwidth_histogram.png}
+    \includegraphics[width=0.8\textwidth]{histograms/part3-e2-path2}
     \caption{Histogram of Bandwidth values for Path 2}
 \end{figure}
+
+
+
 \item Path 3: Hostel-5 (sender) and Hostel-5 (receiver) (different rooms in the same hostel)
 Traceoutput:
 \begin{verbatim}
@@ -329,8 +338,27 @@ Number of hops = 8
 Here is the histogram for this path:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{part3-e2-nandan-room-my-room-buffer_bandwidth_histogram.png}
+    \includegraphics[width=0.8\textwidth]{histograms/part3-e2-nandan-room-my-room-buffer_bandwidth_histogram.png}
     \caption{Histogram of Bandwidth values for Path 3}
+\end{figure}
+
+\item Path 4: SL-Machine (New CC) (sender) and Hostel-5 (Eduroam) (receiver)
+
+        Traceoutput:
+        \begin{verbatim}
+traceroute to 10.64.10.66 (10.64.10.66), 30 hops max, 60 byte packets
+1  _gateway (10.130.154.250)  1.023 ms  1.028 ms  1.285 ms
+2  10.250.130.1 (10.250.130.1)  0.325 ms  0.303 ms  0.283 ms
+3  172.16.12.1 (172.16.12.1)  0.435 ms  0.415 ms  0.395 ms
+4  10.64.10.66 (10.64.10.66)  18.087 ms  18.065 ms  18.181 ms      
+\end{verbatim}   
+Number of hops = 4
+
+Here is the histogram for this path:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{histograms/part3-e2-my-room-sl-buffer_bandwidth_histogram.png}
+    \caption{Histogram of Bandwidth values for Path 4}
 \end{figure}
 \end{itemize}
 
