@@ -236,7 +236,7 @@ The function time\_diff() calculates the difference between two timeval structur
 In sender.c, we are sending the packets one after the other (there is no delay in between). So, as soon as the first packet is sent, the code prepares the second packet and sends it immediately. After this pair is sent, a usleep statement is added before the next pair is sent. 
 \end{solution}
 
-\begin{solution}{Part 3: Experimentation}
+\begin{solution}{Part 3: Experimentation - Experiment-1}
     We restricted the throughput to 10Mbps through the following command:
 \begin{lstlisting}[caption=Restricting the throughput to 10Mbps]
 sudo tc qdisc add dev lo root tbf rate 10mbit burst 9kbit latency 50ms
@@ -266,10 +266,81 @@ The bin size was set to be 0.25 Mbps. Yes, someone looking at the histogram can 
 
 
 A peak of the histogram occurs around 10.75 Mbps (which is a little higher than the limit set by us). We have some values to the left and right of this peak too.
+\end{solution}
+
+
+\begin{solution}{Part 3: Experimentation - Experiment-2}
+    This time we didn't impose any restrictions on the throughput for any interface on either machine. Here are the three paths and the corresponding histograms:
+    \begin{itemize}
+        \item Path 1: Hostel-6 (sender) and Hostel-3 (receiver)
+        Traceoutput:
+        \begin{verbatim}
+traceroute 10.64.17.94
+traceroute to 10.64.17.94 (10.64.17.94), 30 hops max, 60 byte packets
+1  Nandan.mshome.net (172.25.80.1)  0.754 ms  0.706 ms  0.695 ms
+2  dlinkrouter (192.168.0.1)  6.189 ms  5.637 ms  5.108 ms
+3  10.6.160.250 (10.6.160.250)  20.349 ms  20.276 ms  20.259 ms
+4  10.250.6.1 (10.250.6.1)  20.251 ms  20.466 ms  20.236 ms
+5  172.16.2.1 (172.16.2.1)  20.219 ms  20.209 ms  20.154 ms
+6  172.16.12.1 (172.16.12.1)  20.181 ms  18.069 ms  17.572 ms
+7  10.64.17.94 (10.64.17.94)  45.818 ms  45.210 ms  45.464 ms
+        \end{verbatim}
+        Number of hops = 7
+
+        Here is the histogram for this path:
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.8\textwidth]{h6-h3-buffer_bandwidth_histogram.png}
+            \caption{Histogram of Bandwidth values for Path 1}
+        \end{figure}
+        \item Path 2: SL-Machine (New CC) (sender) and Hostel-5 (receiver)
+        Traceoutput:
+        \begin{verbatim}
+traceroute to 10.64.10.66 (10.64.10.66), 30 hops max, 60 byte packets
+1  _gateway (10.130.154.250)  1.023 ms  1.028 ms  1.285 ms
+2  10.250.130.1 (10.250.130.1)  0.325 ms  0.303 ms  0.283 ms
+3  172.16.12.1 (172.16.12.1)  0.435 ms  0.415 ms  0.395 ms
+4  10.64.10.66 (10.64.10.66)  18.087 ms  18.065 ms  18.181 ms      
+\end{verbatim}   
+Number of hops = 4
+
+Here is the histogram for this path:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{part3-e2-my-room-sl-buffer_bandwidth_histogram.png}
+    \caption{Histogram of Bandwidth values for Path 2}
+\end{figure}
+\item Path 3: Hostel-5 (sender) and Hostel-5 (receiver) (different rooms in the same hostel)
+Traceoutput:
+\begin{verbatim}
+traceroute 10.64.10.66
+traceroute to 10.64.10.66 (10.64.10.66), 30 hops max, 60 byte packets
+1  Nandan.mshome.net (172.25.80.1)  0.576 ms  0.508 ms *
+2  * 192.168.1.1 (192.168.1.1)  6.254 ms  6.244 ms
+3  * * *
+4  10.250.5.1 (10.250.5.1)  6.111 ms  6.105 ms  6.052 ms
+5  10.250.18.1 (10.250.18.1)  6.644 ms  6.639 ms *
+6  * 172.16.2.1 (172.16.2.1)  41.568 ms  37.670 ms
+7  172.16.12.1 (172.16.12.1)  41.184 ms  41.168 ms  41.161 ms
+8  10.64.10.66 (10.64.10.66)  134.785 ms  134.778 ms  134.770 ms
+\end{verbatim}
+Number of hops = 8
+
+Here is the histogram for this path:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{part3-e2-nandan-room-my-room-buffer_bandwidth_histogram.png}
+    \caption{Histogram of Bandwidth values for Path 3}
+\end{figure}
+\end{itemize}
 
 
 
-
+Observations:
+\begin{itemize}
+    \item Based on the histogram, it is difficult to say what is the bottleneck bandwidth. The values are spread out and there is no clear peak.
+    \item Path-2 has less number of hops, so its average bandwidth is higher than the other two paths, which is expected.
+\end{itemize}
 
 \end{solution}
 
