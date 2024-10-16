@@ -286,7 +286,7 @@ traceroute to 10.64.17.94 (10.64.17.94), 30 hops max, 60 byte packets
 6  172.16.12.1 (172.16.12.1)  20.181 ms  18.069 ms  17.572 ms
 7  10.64.17.94 (10.64.17.94)  45.818 ms  45.210 ms  45.464 ms
         \end{verbatim}
-        Number of hops = 7
+        % Number of hops = 7
 
         Here is the histogram for this path:
         \begin{figure}[H]
@@ -294,6 +294,12 @@ traceroute to 10.64.17.94 (10.64.17.94), 30 hops max, 60 byte packets
             \includegraphics[width=0.8\textwidth]{histograms/h6-h3-buffer_bandwidth_histogram.png}
             \caption{Histogram of Bandwidth values for Path 1}
         \end{figure}
+
+        Observations:
+\begin{itemize}
+    \item Based on the histogram, it is difficult to say what is the bottleneck bandwidth. The values are spread out and there is no clear peak (on the right side of the histogram).
+    \item The bandwidth is definitely less than 1000 Mbps.
+\end{itemize}
 
         \item Path 2: Hostel-5 Ethernet (sender) and SL-Machine (receiver)
         
@@ -308,7 +314,7 @@ traceroute to 10.64.17.94 (10.64.17.94), 30 hops max, 60 byte packets
     7  10.130.155.33 (10.130.155.33)  3.026 ms  3.279 ms  2.985 ms
 \end{verbatim}
 
-Number of hops = 7
+% Number of hops = 7
 
 Here is the histogram for this path:
 \begin{figure}[H]
@@ -316,6 +322,11 @@ Here is the histogram for this path:
     \includegraphics[width=0.8\textwidth]{histograms/part3-e2-path2}
     \caption{Histogram of Bandwidth values for Path 2}
 \end{figure}
+
+Observations:
+\begin{itemize}
+    \item Based on the histogram, the peak is around 550 Mbps. There are 3 values which are right of this peak but can be because of some error in measurement/noise.
+\end{itemize}
 
 
 
@@ -333,7 +344,7 @@ traceroute to 10.64.10.66 (10.64.10.66), 30 hops max, 60 byte packets
 7  172.16.12.1 (172.16.12.1)  41.184 ms  41.168 ms  41.161 ms
 8  10.64.10.66 (10.64.10.66)  134.785 ms  134.778 ms  134.770 ms
 \end{verbatim}
-Number of hops = 8
+% Number of hops = 8
 
 Here is the histogram for this path:
 \begin{figure}[H]
@@ -341,6 +352,12 @@ Here is the histogram for this path:
     \includegraphics[width=0.8\textwidth]{histograms/part3-e2-nandan-room-my-room-buffer_bandwidth_histogram.png}
     \caption{Histogram of Bandwidth values for Path 3}
 \end{figure}
+
+Observations:
+\begin{itemize}
+    \item Based on the histogram, it is difficult to say what is the bottleneck bandwidth. The values are spread out and there is no clear peak (on the right side of the histogram).
+    \item The bandwidth is definitely less than 1200 Mbps.
+\end{itemize}
 
 \item Path 4: SL-Machine (New CC) (sender) and Hostel-5 (Eduroam) (receiver)
 
@@ -352,7 +369,7 @@ traceroute to 10.64.10.66 (10.64.10.66), 30 hops max, 60 byte packets
 3  172.16.12.1 (172.16.12.1)  0.435 ms  0.415 ms  0.395 ms
 4  10.64.10.66 (10.64.10.66)  18.087 ms  18.065 ms  18.181 ms      
 \end{verbatim}   
-Number of hops = 4
+% Number of hops = 4
 
 Here is the histogram for this path:
 \begin{figure}[H]
@@ -360,14 +377,12 @@ Here is the histogram for this path:
     \includegraphics[width=0.8\textwidth]{histograms/part3-e2-my-room-sl-buffer_bandwidth_histogram.png}
     \caption{Histogram of Bandwidth values for Path 4}
 \end{figure}
-\end{itemize}
-
-
 
 Observations:
 \begin{itemize}
-    \item Based on the histogram, it is difficult to say what is the bottleneck bandwidth. The values are spread out and there is no clear peak.
-    \item Path-2 has less number of hops, so its average bandwidth is higher than the other two paths, which is expected.
+    \item Based on the histogram, it is difficult to say what is the bottleneck bandwidth. The values are spread out and there is no clear peak (on the right side of the histogram).
+    \item The bandwidth is definitely less than 1200 Mbps.
+\end{itemize}   
 \end{itemize}
 
 \end{solution}
